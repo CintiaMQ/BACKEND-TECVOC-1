@@ -62,10 +62,10 @@ router.post('/login', async (req, res) => {
   console.log(`Login attempt for email: ${email}`);
 
   try {
-    const db = await conectarMongoDB(); // Obtener la conexión a MongoDB
-    const usersCollection = db.collection('users'); // Obtener la colección de usuarios
+    const db = await conectarMongoDB();
+    const users = db.collection('users');
 
-    const user = await usersCollection.findOne({ email });
+    const user = await users.findOne({ email });
     if (!user) {
       console.log('User not found');
       return res.status(400).json({ message: 'Invalid credentials' });
