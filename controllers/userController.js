@@ -46,15 +46,35 @@ exports.updateUser = async (req, res) => {
   }
 };
 
+// // Eliminar un usuario por ID
+// exports.deleteUser = async (req, res) => {
+//   try {
+//     const user = await User.findById(req.params.id);
+//     if (!user) return res.status(404).json({ message: 'Usuario no encontrado' });
+
+//     await user.remove();
+//     res.json({ message: 'Usuario eliminado' });
+//   } catch (err) {
+//     res.status(500).json({ message: err.message });
+//   }
+// };
+// Eliminar un usuario por ID
 // Eliminar un usuario por ID
 exports.deleteUser = async (req, res) => {
   try {
+    console.log(`Attempting to delete user with ID: ${req.params.id}`);
     const user = await User.findById(req.params.id);
-    if (!user) return res.status(404).json({ message: 'Usuario no encontrado' });
 
-    await user.remove();
+    if (!user) {
+      console.log(`User with ID: ${req.params.id} not found`);
+      return res.status(404).json({ message: 'Usuario no encontrado' });
+    }
+
+    await user.deleteOne();
+    console.log(`User with ID: ${req.params.id} successfully deleted`);
     res.json({ message: 'Usuario eliminado' });
   } catch (err) {
+    console.error(`Error deleting user with ID: ${req.params.id}`, err);
     res.status(500).json({ message: err.message });
   }
 };
