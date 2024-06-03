@@ -3,7 +3,11 @@ const User = require('../models/User');
 // Obtener todos los usuarios
 exports.getAllUsers = async (req, res) => {
   try {
-    const users = await User.find();
+    const query = {};
+    if (req.query.createdAt_gte) {
+      query.createdAt = { $gte: new Date(req.query.createdAt_gte) };
+    }
+    const users = await User.find(query);
     res.json(users);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -46,19 +50,6 @@ exports.updateUser = async (req, res) => {
   }
 };
 
-// // Eliminar un usuario por ID
-// exports.deleteUser = async (req, res) => {
-//   try {
-//     const user = await User.findById(req.params.id);
-//     if (!user) return res.status(404).json({ message: 'Usuario no encontrado' });
-
-//     await user.remove();
-//     res.json({ message: 'Usuario eliminado' });
-//   } catch (err) {
-//     res.status(500).json({ message: err.message });
-//   }
-// };
-// Eliminar un usuario por ID
 // Eliminar un usuario por ID
 exports.deleteUser = async (req, res) => {
   try {
@@ -75,6 +66,30 @@ exports.deleteUser = async (req, res) => {
     res.json({ message: 'Usuario eliminado' });
   } catch (err) {
     console.error(`Error deleting user with ID: ${req.params.id}`, err);
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// Obtener usuarios registrados en la última semana
+exports.getUsersRegisteredLastWeek = async (req, res) => {
+  try {
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+    const users = await User.find({ createdAt: { $gte: oneWeekAgo } });
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// Obtener usuarios registrados en el último mes
+exports.getUsersRegisteredLastMonth = async (req, res) => {
+  try {
+    const oneMonthAgo = new Date();
+    oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+    const users = await User.find({ createdAt: { $gte: oneMonthAgo } });
+    res.json(users);
+  } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
