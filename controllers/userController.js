@@ -1,29 +1,6 @@
 const User = require('../models/User');
 
-// Obtener todos los usuarios
-exports.getAllUsers = async (req, res) => {
-  try {
-    const query = {};
-    if (req.query.createdAt_gte) {
-      query.createdAt = { $gte: new Date(req.query.createdAt_gte) };
-    }
-    const users = await User.find(query);
-    res.json(users);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};
 
-// Obtener un usuario por ID
-exports.getUserById = async (req, res) => {
-  try {
-    const user = await User.findById(req.params.id);
-    if (!user) return res.status(404).json({ message: 'Usuario no encontrado' });
-    res.json(user);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};
 
 // Crear un nuevo usuario
 exports.createUser = async (req, res) => {
@@ -47,6 +24,31 @@ exports.updateUser = async (req, res) => {
     res.json(updatedUser);
   } catch (err) {
     res.status(400).json({ message: err.message });
+  }
+};
+
+// Obtener todos los usuarios
+exports.getAllUsers = async (req, res) => {
+  try {
+    const query = {};
+    if (req.query.createdAt_gte) {
+      query.createdAt = { $gte: new Date(req.query.createdAt_gte) };
+    }
+    const users = await User.find(query);
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// Obtener un usuario por ID
+exports.getUserById = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) return res.status(404).json({ message: 'Usuario no encontrado' });
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 };
 
